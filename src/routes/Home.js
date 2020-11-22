@@ -8,7 +8,7 @@ const Home = () => {
     event.preventDefault();
     await dbService.collection("nweets").add({
       nweet,
-      createdAt: Date.now()
+      createdAt: Date.now(),
     });
     setNweet("");
   };
@@ -20,8 +20,8 @@ const Home = () => {
 
   return (
     <div>
-      <form>
-        <input type="text" placeholder="What's on your mind?" maxLength="120" required />
+      <form onSubmit={onSubmit}>
+        <input type="text" value={nweet} placeholder="What's on your mind?" maxLength="120" required onChange={onChange}/>
         <input type="submit" value="Nweet" />
       </form>
     </div>
