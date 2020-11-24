@@ -20,16 +20,21 @@ const Home = ({userObj}) => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    // await dbService.collection("nweets").add({
-    //   text: nweet,
-    //   createdAt: Date.now(),
-    //   creatorId: userObj.uid,
-    // });
-    // setNweet("");
-
-    const fileRef = storageService.ref().child(`${userObj.uid}/${uuidv4()}`);
-    const response = await fileRef.putString(attachment, "data_url");
-    console.log(response);
+    
+    let attachmentUrl;
+    if(attachment != "") {
+      const attachmentRef = storageService.ref().child(`${userObj.uid}/${uuidv4()}`);
+      const response = await attachmentRef.putString(attachment, "data_url");
+      attachmentUrl = await response.ref.getDownloadURL();
+    }
+    await dbService.collection("nweets").add({
+      text: nweet,
+      createdAt: Date.now(),
+      creatorId: userObj.uid,
+      attachmentUrl,
+    });
+    setNweet("");
+    setAttachment("");
   };
 
   const onChange = (event) => {
@@ -58,7 +63,7 @@ const Home = ({userObj}) => {
     <div>
       <form onSubmit={onSubmit}>
         <input type="text" value={nweet} placeholder="What's on your mind?" maxLength="120" required onChange={onChange}/>
-        <input type="file" accept="image/*" onChange={onFileChange} />
+        <input type="file" value={attachment} accept="image/*" onChange={onFileChange} />
         <input type="submit" value="Nweet" />
         {attachment && (
           <div>
