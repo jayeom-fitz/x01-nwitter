@@ -6,7 +6,7 @@ import { dbService, storageService } from "../fbase";
 const Home = ({userObj}) => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState([]);
-  const [attachment, setAttachment] = useState();
+  const [attachment, setAttachment] = useState("");
 
   useEffect(() => {
     dbService.collection("nweets").onSnapshot((snapshot) => {
@@ -63,7 +63,7 @@ const Home = ({userObj}) => {
     <div>
       <form onSubmit={onSubmit}>
         <input type="text" value={nweet} placeholder="What's on your mind?" maxLength="120" required onChange={onChange}/>
-        <input type="file" value={attachment} accept="image/*" onChange={onFileChange} />
+        <input type="file" accept="image/*" onChange={onFileChange} />
         <input type="submit" value="Nweet" />
         {attachment && (
           <div>
