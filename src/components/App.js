@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useReducer, useState} from "react";
 import AppRouter from "./Router";
 import {authService} from "../fbase";
 
@@ -11,7 +11,11 @@ function App() {
     authService.onAuthStateChanged((user) => {
       if(user) {
         setIsLoggedIn(true);
-        setUserObj(user);
+        setUserObj({
+          displayName: useReducer.displayName,
+          uid: user.uid,
+          updateProfile: (args) => user.updateProfile(args),
+        });
       }else {
         setIsLoggedIn(false);
       }
@@ -19,10 +23,19 @@ function App() {
     });
   }, []);
   
+  const refreshUser = () => {
+    const user = authService.currentUser;
+    setUserObj({
+      displayName: user.displayName,
+      uid: user.uid,
+      updateProfile: (args) => user.updateProfile(args),
+    });
+  };
+
   return (
   <>
     {init ? 
-    <AppRouter isLoggedIn={isLoggedIn} userObj={userObj} />
+    <AppRouter isLoggedIn={isLoggedIn} userObj={userObj} refreshUser={refreshUser} />
     : "Initializing..."
     }
     <footer>&copy;{new Date().getFullYear()} Nwitter</footer>
